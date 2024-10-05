@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Report Suspicious Behavior on Roblox</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #1e1e1e;
+            color: #fff;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .header {
+            background-color: #333;
+            padding: 15px;
+            width: 100%;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .header a {
+            color: #f7c642;
+            margin: 0 15px;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        .header a:hover {
+            text-decoration: underline;
+        }
+
+        .container {
+            background-color: #333;
+            padding: 20px;
+            border-radius: 10px;
+            width: 90%;
+            max-width: 500px;
+        }
+
+        h1 {
+            text-align: center;
+            color: #f7c642;
+        }
+
+        label {
+            display: block;
+            margin: 15px 0 5px;
+        }
+
+        select, input, textarea {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 5px;
+            border: none;
+            background-color: #555;
+            color: white;
+        }
+
+        textarea {
+            resize: vertical;
+        }
+
+        button {
+            width: 100%;
+            padding: 10px;
+            background-color: #f7c642;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        button:hover {
+            background-color: #e6b632;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .checkbox-container {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="header">
+    <a href="#report">Report</a>
+    <a href="#terms-of-service">Terms of Service</a>
+    <a href="https://discord.gg/6YnQ2YWenK" target="_blank">Our Discord</a>
+    <a href="#about-us">About Us</a>
+</div>
+
+<div class="container">
+    <h1>Report Suspicious Behavior</h1>
+
+    <form id="reportForm">
+        <label for="reportType">What would you like to report?</label>
+        <select id="reportType" name="reportType" required>
+            <option value="">Select...</option>
+            <option value="game">🚨Game</option>
+            <option value="userProfile">🪪User Profiles</option>
+            <option value="asset">👕Assets</option>
+            <option value="group">👥Groups</option>
+        </select>
+
+        <div id="gameSection" class="hidden">
+            <label for="gameLink">Link to Game</label>
+            <input type="text" id="gameLink" name="gameLink">
+
+            <label for="gameDescription">Description</label>
+            <textarea id="gameDescription" name="gameDescription" rows="4"></textarea>
+
+            <label for="gameEvidence">Evidence</label>
+            <textarea id="gameEvidence" name="gameEvidence" rows="4"></textarea>
+        </div>
+
+        <div id="profileSection" class="hidden">
+            <label for="profileLink">Link to Profile</label>
+            <input type="text" id="profileLink" name="profileLink">
+
+            <label for="profileDescription">Description</label>
+            <textarea id="profileDescription" name="profileDescription" rows="4"></textarea>
+
+            <label for="profileEvidence">Evidence</label>
+            <textarea id="profileEvidence" name="profileEvidence" rows="4"></textarea>
+        </div>
+
+        <div id="assetSection" class="hidden">
+            <label for="assetLinks">Links to Assets (separate with spaces)</label>
+            <textarea id="assetLinks" name="assetLinks" rows="3"></textarea>
+
+            <label for="assetCreator">Creator (group or user)</label>
+            <input type="text" id="assetCreator" name="assetCreator">
+
+            <label for="assetDescription">Description</label>
+            <textarea id="assetDescription" name="assetDescription" rows="4"></textarea>
+
+            <label for="assetEvidence">Evidence</label>
+            <textarea id="assetEvidence" name="assetEvidence" rows="4"></textarea>
+        </div>
+
+        <div id="groupSection" class="hidden">
+            <label for="groupLink">Link to Group</label>
+            <input type="text" id="groupLink" name="groupLink">
+
+            <label for="groupDescription">Description</label>
+            <textarea id="groupDescription" name="groupDescription" rows="4"></textarea>
+
+            <label for="groupEvidence">Evidence</label>
+            <textarea id="groupEvidence" name="groupEvidence" rows="4"></textarea>
+        </div>
+
+        <div class="checkbox-container">
+            <input type="checkbox" id="confirmation" name="confirmation" required>
+            <label for="confirmation">By checking this box, I confirm that I have sent a report to Roblox, waited 24 hours, and agree to the Terms of Service.</label>
+        </div>
+
+        <button type="submit">Submit Report</button>
+    </form>
+</div>
+
+<script>
+    const reportTypeSelect = document.getElementById('reportType');
+    const gameSection = document.getElementById('gameSection');
+    const profileSection = document.getElementById('profileSection');
+    const assetSection = document.getElementById('assetSection');
+    const groupSection = document.getElementById('groupSection');
+
+    reportTypeSelect.addEventListener('change', function() {
+        gameSection.classList.add('hidden');
+        profileSection.classList.add('hidden');
+        assetSection.classList.add('hidden');
+        groupSection.classList.add('hidden');
+
+        const selectedValue = reportTypeSelect.value;
+
+        if (selectedValue === 'game') {
+            gameSection.classList.remove('hidden');
+        } else if (selectedValue === 'userProfile') {
+            profileSection.classList.remove('hidden');
+        } else if (selectedValue === 'asset') {
+            assetSection.classList.remove('hidden');
+        } else if (selectedValue === 'group') {
+            groupSection.classList.remove('hidden');
+        }
+    });
+
+    document.getElementById("reportForm").addEventListener("submit", function(e) {
+        e.preventDefault();
+
+        const reportType = reportTypeSelect.value;
+        let description = '', evidence = '', link = '', creator = '';
+
+        if (reportType === 'game') {
+            link = document.getElementById("gameLink").value;
+            description = document.getElementById("gameDescription").value;
+            evidence = document.getElementById("gameEvidence").value;
+        } else if (reportType === 'userProfile') {
+            link = document.getElementById("profileLink").value;
+            description = document.getElementById("profileDescription").value;
+            evidence = document.getElementById("profileEvidence").value;
+        } else if (reportType === 'asset') {
+            link = document.getElementById("assetLinks").value;
+            creator = document.getElementById("assetCreator").value;
+            description = document.getElementById("assetDescription").value;
+            evidence = document.getElementById("assetEvidence").value;
+        } else if (reportType === 'group') {
+            link = document.getElementById("groupLink").value;
+            description = document.getElementById("groupDescription").value;
+            evidence = document.getElementById("groupEvidence").value;
+        }
+
+        const reporter = "Anonymous"; // Can be adapted if you want to add a reporter field later
+
+        const webhookURL = "https://discord.com/api/webhooks/1291746503039123486/PL9pFIrJ1C4Qdn9-dOJYmyXe052GA5Oj7wy2zOrm3f3W5gng3oEsv_ARaBUjhQcMYW2w";
+
+        const payload = {
+            "content": null,
+            "embeds": [{
+                "title": `New Report - ${reportType}`,
+                "color": 16711680,  // Red color
+                "fields": [
+                    {
+                        "name": "Link",
+                        "value": link || "Not provided"
+                    },
+                    {
+                        "name": "Description",
+                        "value": description || "Not provided"
+                    },
+                    {
+                        "name": "Evidence",
+                        "value": evidence || "Not provided"
+                    },
+                    ...(reportType === 'asset' ? [{ "name": "Creator", "value": creator || "Not provided" }] : [])
+                ],
+                "footer": {
+                    "text": "Useful Links:"
+                },
+                "description": "**Actions you can take:**\n- [Report to Roblox](https://www.roblox.com/support#contact)\n- [Europe Only Form](https://www.roblox.com/support#contact)"
+            }]
+        };
+
+        fetch(webhookURL, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(payload)
+        })
+        .then(response => {
+            if (response.ok) {
+                alert('Report submitted successfully!');
+                document.getElementById("reportForm").reset();
+            } else {
+                alert('An error occurred. Please try again.');
+            }
+        })
+        .catch(error => {
+            alert('An error occurred. Please try again.');
+        });
+    });
+</script>
+
+</body>
+</html>
