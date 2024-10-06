@@ -87,29 +87,6 @@
             display: none;
         }
 
-        .file-upload-container {
-            display: flex;
-            align-items: center;
-            margin-top: 10px;
-        }
-
-        .file-upload-container i {
-            margin-left: 10px;
-            cursor: pointer;
-        }
-
-        .arrow {
-            display: block;
-            margin-top: -15px;
-            margin-bottom: 5px;
-            text-align: right;
-        }
-
-        .arrow span {
-            font-size: 12px;
-            color: #f7c642;
-        }
-
         .checkbox-container {
             margin-top: 20px;
         }
@@ -146,12 +123,6 @@
 
             <label for="gameEvidence">Evidence</label>
             <textarea id="gameEvidence" name="gameEvidence" rows="4"></textarea>
-
-            <div class="file-upload-container">
-                <input type="file" id="gameFile" class="hidden" accept="image/*, video/*">
-                <i id="gameFileIcon">➕</i>
-                <div class="arrow"><span>Upload files from here</span></div>
-            </div>
         </div>
 
         <div id="profileSection" class="hidden">
@@ -163,12 +134,6 @@
 
             <label for="profileEvidence">Evidence</label>
             <textarea id="profileEvidence" name="profileEvidence" rows="4"></textarea>
-
-            <div class="file-upload-container">
-                <input type="file" id="profileFile" class="hidden" accept="image/*, video/*">
-                <i id="profileFileIcon">➕</i>
-                <div class="arrow"><span>Upload files from here</span></div>
-            </div>
         </div>
 
         <div id="assetSection" class="hidden">
@@ -183,12 +148,6 @@
 
             <label for="assetEvidence">Evidence</label>
             <textarea id="assetEvidence" name="assetEvidence" rows="4"></textarea>
-
-            <div class="file-upload-container">
-                <input type="file" id="assetFile" class="hidden" accept="image/*, video/*">
-                <i id="assetFileIcon">➕</i>
-                <div class="arrow"><span>Upload files from here</span></div>
-            </div>
         </div>
 
         <div id="groupSection" class="hidden">
@@ -200,12 +159,6 @@
 
             <label for="groupEvidence">Evidence</label>
             <textarea id="groupEvidence" name="groupEvidence" rows="4"></textarea>
-
-            <div class="file-upload-container">
-                <input type="file" id="groupFile" class="hidden" accept="image/*, video/*">
-                <i id="groupFileIcon">➕</i>
-                <div class="arrow"><span>Upload files from here</span></div>
-            </div>
         </div>
 
         <div class="checkbox-container">
@@ -244,23 +197,46 @@
         }
     });
 
-    // Plus icon click to show file input
-    document.querySelectorAll('i').forEach((icon) => {
-        icon.addEventListener('click', function() {
-            const input = icon.previousElementSibling;
-            input.classList.toggle('hidden');
-        });
-    });
-
     document.getElementById('reportForm').addEventListener('submit', async function(e) {
         e.preventDefault();
 
-        const formData = new FormData(this);
+        const reportType = reportTypeSelect.value;
+        let data = {
+            content: '',
+            embeds: [
+                {
+                    title: `New ${reportType} Report`,
+                    fields: []
+                }
+            ]
+        };
+
+        if (reportType === 'game') {
+            data.embeds[0].fields.push({ name: 'Link to Game', value: document.getElementById('gameLink').value });
+            data.embeds[0].fields.push({ name: 'Description', value: document.getElementById('gameDescription').value });
+            data.embeds[0].fields.push({ name: 'Evidence', value: document.getElementById('gameEvidence').value });
+        } else if (reportType === 'userProfile') {
+            data.embeds[0].fields.push({ name: 'Link to Profile', value: document.getElementById('profileLink').value });
+            data.embeds[0].fields.push({ name: 'Description', value: document.getElementById('profileDescription').value });
+            data.embeds[0].fields.push({ name: 'Evidence', value: document.getElementById('profileEvidence').value });
+        } else if (reportType === 'asset') {
+            data.embeds[0].fields.push({ name: 'Links to Assets', value: document.getElementById('assetLinks').value });
+            data.embeds[0].fields.push({ name: 'Creator', value: document.getElementById('assetCreator').value });
+            data.embeds[0].fields.push({ name: 'Description', value: document.getElementById('assetDescription').value });
+            data.embeds[0].fields.push({ name: 'Evidence', value: document.getElementById('assetEvidence').value });
+        } else if (reportType === 'group') {
+            data.embeds[0].fields.push({ name: 'Link to Group', value: document.getElementById('groupLink').value });
+            data.embeds[0].fields.push({ name: 'Description', value: document.getElementById('groupDescription').value });
+            data.embeds[0].fields.push({ name: 'Evidence', value: document.getElementById('groupEvidence').value });
+        }
 
         try {
             const response = await fetch('https://discord.com/api/webhooks/1291746503039123486/PL9pFIrJ1C4Qdn9-dOJYmyXe052GA5Oj7wy2zOrm3f3W5gng3oEsv_ARaBUjhQcMYW2w', {
                 method: 'POST',
-                body: formData,
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(data)
             });
 
             if (response.ok) {
