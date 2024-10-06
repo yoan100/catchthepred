@@ -149,7 +149,7 @@
 
             <div class="file-upload-container">
                 <input type="file" id="gameFile" class="hidden" accept="image/*, video/*">
-                <i id="gameFileIcon">+</i>
+                <i id="gameFileIcon">➕</i>
                 <div class="arrow"><span>Upload files from here</span></div>
             </div>
         </div>
@@ -224,7 +224,6 @@
     const assetSection = document.getElementById('assetSection');
     const groupSection = document.getElementById('groupSection');
     const submitButton = document.getElementById('submitButton');
-    const cooldownTime = 10000; // Cooldown time in milliseconds (10 seconds)
 
     reportTypeSelect.addEventListener('change', function() {
         gameSection.classList.add('hidden');
@@ -253,19 +252,8 @@
         });
     });
 
-    // Cooldown function to prevent spamming
-    function startCooldown() {
-        submitButton.disabled = true;
-        setTimeout(() => {
-            submitButton.disabled = false;
-        }, cooldownTime);
-    }
-
     document.getElementById('reportForm').addEventListener('submit', function(e) {
         e.preventDefault();
-
-        // Start cooldown
-        startCooldown();
 
         // Report submission logic here (same as previous script)
         // ...
